@@ -1,0 +1,117 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: dev-mysql
+    platform: linux/x86_64
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - '3316:3306'
+    volumes:
+      # - ./mysql:/var/lib/mysql
+      - mysqldata:/var/lib/mysql
+    networks:
+      - middleware
+  mariadb:
+    image: mariadb
+    container_name: dev-mariadb
+    platform: linux/x86_64
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - '3306:3306'
+    volumes:
+      # - ./mariadb:/var/lib/mysql
+      - mariadbdata:/var/lib/mysql
+    networks:
+      - middleware
+  redis:
+    image: redis:6.0
+    container_name: dev-redis
+    platform: linux/x86_64
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      # - ./redis:/data
+      - redisdata:/data
+    networks:
+      - middleware
+  mongodb:
+    image: mongo:7-jammy
+    container_name: dev-mongodb
+    platform: linux/x86_64
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodata:/data/db
+      - mongodataconfigdb:/data/configdb
+    networks:
+      - middleware
+  etcd:
+    image: bitnami/etcd:latest
+    container_name: dev-etcd
+    platform: linux/x86_64
+    restart: always
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    ports:
+      - '2379:2379'
+      - '2380:2380'
+    networks:
+      - middleware
+  consul:
+    image: bitnami/consul:latest
+    container_name: dev-consul
+    platform: linux/x86_64
+    restart: always
+    ports:
+      - '8300:8300'
+      - '8301:8301'
+      - '8301:8301/udp'
+      - '8500:8500'
+      - '8600:8600'
+      - '8600:8600/udp'
+    volumes:
+      # - ./consul:/bitnami
+      - consuldata:/data
+  redis-cluster:
+    image: grokzen/redis-cluster:latest
+    container_name: dev-redis-cluster
+    platform: linux/x86_64
+    environment:
+      - IP=0.0.0.0
+      - STANDALONE=true
+      - SENTINEL=true
+    ports:
+      - '7000-7005:7000-7005'
+    volumes:
+      - redisclusterdata:/data
+  nats:
+    image: nats:latest
+    container_name: dev-nats
+    platform: linux/x86_64
+    restart: always
+    ports:
+      - '4222:4222'
+      - '6222:6222'
+      - '8222:8222'
+networks:
+  middleware:
+    driver: bridge
+volumes:
+  mongodata:
+  mongodataconfigdb:
+  consuldata:
+  redisdata:
+  mariadbdata:
+  redisclusterdata:
+  mysqldata:

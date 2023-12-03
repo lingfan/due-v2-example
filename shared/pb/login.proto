@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "due-mahjong-server/shared/pb/login";
+
+package login;
+
+import "code.proto";
+
+// 登录模式
+enum LoginMode {
+  None = 0; // 默认
+  Guest = 1; // 来宾登录
+  Mobile = 2; // 手机登录
+  Account = 3; // 账号登录
+  Wechat = 4; // 微信登录
+  Google = 5; // 谷歌登录
+  Facebook = 6; // 脸书登录
+  Token = 7; // TOKEN登录
+}
+
+// 用户登录请求
+message LoginReq {
+  LoginMode Mode = 1; // 登录模式
+  string DeviceID = 2; // 设备ID
+  string Account = 3; // 账号
+  string Password = 4; // 密码
+  string Openid = 5; // openid
+  string Mobile = 6; // 手机号
+  string Code = 7; // 验证码
+  string Token = 8; // TOKEN，微信、脸书、谷歌均用此token
+}
+
+// 用户登录响应
+message LoginRes {
+  common.Code Code = 1; // 错误码
+  string Token = 2; // TOKEN
+}
+

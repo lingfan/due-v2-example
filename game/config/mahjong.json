@@ -1,0 +1,18 @@
+{
+  "rooms": [
+    {
+      "id": 1,
+      "name": "普通场-初级",
+      "minEntryLimit": 100,
+      "maxEntryLimit": 1000,
+      "feeRate": 10,
+      "totalTables": 10000,
+      "totalSeats": 4,
+      "autoReady": false,
+      "autoStart": false
+    }
+  ]
+}
+
+
+

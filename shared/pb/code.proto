@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "due-mahjong-server/shared/pb/common";
+
+package common;
+
+// 返回码
+enum Code {
+  OK = 0; // 成功
+  Failed = 1; // 失败
+  Abnormal = 2; // 解析异常
+  IllegalParams = 3; // 参数非法
+  IncorrectAccountOrPassword = 4; // 账号或密码错误
+  TokenExpired = 5; // Token已过期
+  NoPermission = 6; // 没有操作权限
+  NotFound = 7; // 未找到资源
+  NotLogin = 8; // 未登录
+  IllegalOperation = 9; // 非法操作
+  SeatAlreadyTaken = 10; // 座位被占用
+}

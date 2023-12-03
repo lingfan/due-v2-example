@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "due-mahjong-server/shared/pb/common";
+
+package common;
+
+enum Gender {
+  Unknown = 0; // 未知
+  Male = 1; // 男性
+  Female = 2; // 女性
+}
+
+message User {
+  int64 UID = 1; // 用户ID
+  string Account = 2; // 用户账号
+  string Nickname = 3; // 用户昵称
+  string Avatar = 4; // 用户头像
+  string Signature = 5; // 用户签名
+  Gender Gender = 6; // 用户性别
+  int32 Level = 7; // 用户等级
+  int32 Experience = 8; // 用户经验
+  int32 Coin = 9; // 用户金币
+  string LastLoginIP = 10; // 最近登录IP
+  int64 LastLoginTime = 11; // 最近登录时间
+}

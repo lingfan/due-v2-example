@@ -1,0 +1,18 @@
+[mongo]
+    # 数据源
+    dsn = "mongodb://root:123456@127.0.0.1:27017"
+    # 数据库
+    database = "mahjong1"
+[jwt]
+    # jwt发行方
+    issuer = "mahjong"
+    # 过期时间
+    expiredTime = 7200
+    # 秘钥KEY
+    secretKey = "MZlD9KpffCPh7oJtCaDoqFQE1cqZyVKfoxeQdYy4mkYKkBUCQQDQpPO7MmTPmuLI"
+    # 身份认证KEY
+    identityKey = "uid"
+[google]
+    [oauth2]
+        # 凭证文件
+        credentials = "./config/application_default_credentials.json"

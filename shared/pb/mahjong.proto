@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+option go_package = "due-mahjong-server/shared/pb/mahjong";
+
+package mahjong;
+
+import "code.proto";
+import "common.proto";
+
+enum SeatState {
+  None = 0; // 无效
+  Offline = 1; // 离线
+  Online = 2; // 上线
+  StandUp = 3; // 起立
+  Ready = 4; // 准备
+  Unready = 5; // 取消准备
+}
+
+// 快速开始响应
+message QuickStartRes {
+  common.Code Code = 1; // 错误码
+  GameInfo GameInfo = 2; // 游戏信息
+}
+
+// 坐下请求
+message SitDownReq {
+  int32 RoomID = 1; // 房间ID
+  int32 TableID = 2; // 牌桌ID
+  int32 SeatID = 3; // 座位ID
+}
+
+// 坐下响应
+message SitDownRes {
+  common.Code Code = 1; // 错误码
+  GameInfo GameInfo = 2; // 游戏信息
+}
+
+// 站起响应
+message StandUpRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 开始准备响应
+message ReadyRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 取消准备响应
+message UnreadyRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 游戏信息
+message GameInfo {
+  Room Room = 1; // 房间
+  Table Table = 2; // 牌桌
+}
+
+
+message FetchRoomsReq {
+
+}
+
+message Room {
+  int32 ID = 1; // 房间ID
+  string Name = 2; // 房间名称
+  int32 MinEntryLimit = 3; // 最小进入限制
+  int32 MaxEntryLimit = 4; // 最大进入限制
+}
+
+message Table {
+  int32 ID = 1; // 牌桌ID
+  repeated Seat Seats = 2; // 座位信息
+}
+
+message Seat {
+  int32 ID = 1; // 座位ID
+  Player Player = 2; // 玩家信息
+  bool IsOnline = 3; // 是否在线
+  bool IsReady = 4; // 是否准备
+}
+
+message Player {
+  common.User User = 1; // 用户
+  bool IsMyself = 2; // 是否是自己
+}
+
+// 玩家座位状态变更通知
+message SeatStateChangeNotify {
+  int32 SeatID = 1; // 座位ID
+  SeatState SeatState = 2; // 座位状态
+}
+
+// 玩家入座通知
+message TakeSeatNotify {
+  Seat Seat = 1; // 座位信息
+}
+
+// 游戏信息通知
+message GameInfoNotify {
+  GameInfo GameInfo = 1; // 游戏信息
+}
