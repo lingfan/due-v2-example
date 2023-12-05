@@ -62,6 +62,7 @@ func (l *Login) login(ctx *node.Context) {
 		res.Code = common.Code_Abnormal
 		return
 	}
+	log.Infof("GetIP %v", clientIP)
 
 	if req.GetDeviceID() == "" {
 		res.Code = common.Code_IllegalParams
@@ -112,6 +113,7 @@ func (l *Login) login(ctx *node.Context) {
 		res.Code = common.Code_Failed
 		return
 	}
+	log.Infof("uid %v token %v", uid, token)
 
 	res.Code = common.Code_OK
 	res.Token = token

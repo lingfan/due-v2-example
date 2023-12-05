@@ -11,6 +11,7 @@ import (
 	"github.com/dobyte/due/v2/cluster"
 	"github.com/dobyte/due/v2/cluster/node"
 	"github.com/dobyte/due/v2/config"
+	"github.com/dobyte/due/v2/config/file"
 	"github.com/dobyte/due/v2/errors"
 	"github.com/dobyte/due/v2/log"
 	"github.com/dobyte/due/v2/session"
@@ -23,9 +24,15 @@ type Mahjong struct {
 	playerMgr *entity.PlayerMgr
 }
 
+func init() {
+	source := file.NewSource(file.WithMode(config.ReadWrite))
+	config.SetConfigurator(config.NewConfigurator(config.WithSources(source)))
+}
+
 func NewMahjong(proxy *node.Proxy) *Mahjong {
 	opts := make([]*entity.Options, 0)
-	err := config.Get("mahjong.rooms").Scan(&opts)
+	err := config.Match("mahjong.rooms").Scan(&opts)
+	log.Infof("NewMahjong config.Get %+v ", opts)
 	if err != nil {
 		log.Fatalf("load mahjong rooms config failed: %v", err)
 	}
@@ -113,7 +120,10 @@ func (l *Mahjong) quickStart(ctx *node.Context) {
 		return
 	}
 
+	log.Infof("playerMgr.LoadPlayer %v %+v", ctx.Request.UID, player)
+
 	seat := player.Seat()
+	log.Infof("player.Seat %+v", seat)
 	if seat != nil {
 		res.Code = common.Code_IllegalOperation
 		return

@@ -7,16 +7,11 @@ import (
 	"github.com/dobyte/due/transport/grpc/v2"
 	"github.com/dobyte/due/v2"
 	"github.com/dobyte/due/v2/cluster/node"
-	"github.com/dobyte/due/v2/config"
-	"github.com/dobyte/due/v2/config/file"
 	"github.com/dobyte/due/v2/mode"
 )
 
 func main() {
 	mode.SetMode(mode.DebugMode)
-
-	source := file.NewSource(file.WithPath("./config"), file.WithMode(config.ReadOnly))
-	config.SetConfigurator(config.NewConfigurator(config.WithSources(source)))
 
 	// 创建容器
 	container := due.NewContainer()

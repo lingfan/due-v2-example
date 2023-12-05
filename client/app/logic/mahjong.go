@@ -4,6 +4,7 @@ import (
 	"due-v2-example/shared/pb/common"
 	mahjongpb "due-v2-example/shared/pb/mahjong"
 	"due-v2-example/shared/route"
+	"github.com/dobyte/due/v2/cluster"
 	"github.com/dobyte/due/v2/cluster/client"
 	"github.com/dobyte/due/v2/log"
 )
@@ -33,12 +34,20 @@ func (l *Mahjong) quickStartAck(ctx *client.Context) {
 	}
 
 	if res.Code != common.Code_OK {
-		log.Warnf("%v", res.Code)
+		log.Warnf("quickStartAck %v", res.Code)
 		return
 	}
 
-	log.Info("quick start success")
-	log.Infof("%+v", res)
+	log.Infof("quick start success %+v", res)
+
+	msg := &cluster.Message{
+		Route: route.Ready,
+		Data:  []byte{},
+	}
+	err = l.proxy.Push(msg)
+	if err != nil {
+		log.Errorf("push message route.Ready failed: %v", err)
+	}
 }
 
 func (l *Mahjong) gameInfoNotify(ctx *client.Context) {

@@ -59,11 +59,11 @@ func initEvent(proxy *client.Proxy) {
 					DeviceID: store.DeviceID + string(rune(i)),
 				},
 			}
-			log.Infof("push message: %+v", msg)
+			log.Infof("push route.Login message: %+v", msg)
 
 			err := proxy.Push(msg)
 			if err != nil {
-				log.Errorf("push message failed: %v", err)
+				log.Errorf("push message route.Login failed: %v", err)
 			}
 
 		}

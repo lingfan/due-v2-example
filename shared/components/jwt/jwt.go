@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"github.com/dobyte/due/v2/config"
+	"github.com/dobyte/due/v2/etc"
 	"github.com/dobyte/due/v2/log"
 	"github.com/dobyte/jwt"
 	"sync"
@@ -25,7 +25,7 @@ func Instance() *JWT {
 			IdentityKey   string `json:"identityKey"`
 		}{}
 
-		err := config.Get("config.jwt").Scan(conf)
+		err := etc.Match("etc.jwt").Scan(conf)
 		if err != nil {
 			log.Fatalf("load jwt config failed: %v", err)
 		}

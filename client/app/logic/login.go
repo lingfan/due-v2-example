@@ -41,18 +41,20 @@ func (l *Login) login(ctx *client.Context) {
 	}
 
 	if res.Code != commonpb.Code_OK {
-		log.Warnf("%+v", res)
+		log.Warnf("logic.login %+v", res)
 		return
 	}
 
 	store.Token = res.Token
 
 	log.Info("login success")
+
 	msg := &cluster.Message{
 		Route: route.QuickStart,
+		Data:  []byte{},
 	}
 	err = l.proxy.Push(msg)
 	if err != nil {
-		log.Errorf("push message failed: %v", err)
+		log.Errorf("push route.QuickStart message failed: %v", err)
 	}
 }
