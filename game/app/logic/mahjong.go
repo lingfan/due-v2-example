@@ -11,7 +11,6 @@ import (
 	"github.com/dobyte/due/v2/cluster"
 	"github.com/dobyte/due/v2/cluster/node"
 	"github.com/dobyte/due/v2/config"
-	"github.com/dobyte/due/v2/config/file"
 	"github.com/dobyte/due/v2/errors"
 	"github.com/dobyte/due/v2/log"
 	"github.com/dobyte/due/v2/session"
@@ -22,11 +21,6 @@ type Mahjong struct {
 	ctx       context.Context
 	roomMgr   *entity.RoomMgr
 	playerMgr *entity.PlayerMgr
-}
-
-func init() {
-	source := file.NewSource(file.WithMode(config.ReadWrite))
-	config.SetConfigurator(config.NewConfigurator(config.WithSources(source)))
 }
 
 func NewMahjong(proxy *node.Proxy) *Mahjong {

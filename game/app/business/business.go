@@ -6,9 +6,16 @@ import (
 	"due-v2-example/shared/event"
 	"github.com/dobyte/due/eventbus/redis/v2"
 	"github.com/dobyte/due/v2/cluster/node"
+	"github.com/dobyte/due/v2/config"
+	"github.com/dobyte/due/v2/config/file"
 	"github.com/dobyte/due/v2/eventbus"
 	"github.com/dobyte/due/v2/log"
 )
+
+func init() {
+	source := file.NewSource(file.WithMode(config.ReadWrite))
+	config.SetConfigurator(config.NewConfigurator(config.WithSources(source)))
+}
 
 func Init(proxy *node.Proxy) {
 	// 初始化路由
@@ -21,6 +28,8 @@ func Init(proxy *node.Proxy) {
 func initRoute(proxy *node.Proxy) {
 	// 麻将逻辑
 	logic.NewMahjong(proxy).Init()
+	logic.NewTexas(proxy).Init()
+
 }
 
 // 初始化事件

@@ -22,6 +22,8 @@ func (l *Mahjong) Init() {
 	l.proxy.AddRouteHandler(route.QuickStart, l.quickStartAck)
 	// 游戏信息通知
 	l.proxy.AddRouteHandler(route.GameInfoNotify, l.gameInfoNotify)
+	l.proxy.AddRouteHandler(route.Ready, l.ready)
+
 }
 
 func (l *Mahjong) quickStartAck(ctx *client.Context) {
@@ -61,4 +63,8 @@ func (l *Mahjong) gameInfoNotify(ctx *client.Context) {
 
 	log.Info("receive game info")
 	log.Infof("%+v", ntf)
+}
+
+func (l *Mahjong) ready(ctx *client.Context) {
+	log.Info("receive ready info")
 }

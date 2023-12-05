@@ -34,7 +34,7 @@ func (l *Mail) Init() {
 		// 拉取邮件列表
 		group.AddRouteHandler(route.FetchMailList, false, l.fetchList)
 		// 读取邮件
-		group.AddRouteHandler(route.ReadMail, false, l.readMail)
+		group.AddRouteHandler(route.ReadMail, true, l.readMail)
 		// 一键读取所有邮件
 		group.AddRouteHandler(route.ReadAllMail, false, l.readAllMail)
 		// 删除邮件

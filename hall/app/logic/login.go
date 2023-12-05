@@ -113,7 +113,14 @@ func (l *Login) login(ctx *node.Context) {
 		res.Code = common.Code_Failed
 		return
 	}
-	log.Infof("uid %v token %v", uid, token)
+
+	log.Infof("uid %v\ntoken %v\nnid %v\n", uid, token, ctx.Request.NID)
+
+	//if err = l.proxy.BindNode(ctx.Context(), uid, "hall01"); err != nil {
+	//	log.Errorf("bind node failed: uid: %d err: %v", ctx.Request.UID, err)
+	//	res.Code = common.Code_Failed
+	//	return
+	//}
 
 	res.Code = common.Code_OK
 	res.Token = token

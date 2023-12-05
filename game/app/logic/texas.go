@@ -9,13 +9,13 @@ import (
 )
 
 type Texas struct {
-	proxy     node.Proxy
+	proxy     *node.Proxy
 	ctx       context.Context
 	roomMgr   *entity.RoomMgr
 	playerMgr *entity.PlayerMgr
 }
 
-func NewTexas(proxy node.Proxy) *Texas {
+func NewTexas(proxy *node.Proxy) *Texas {
 	opts := make([]*entity.Options, 0)
 	err := config.Get("texas.rooms").Scan(&opts)
 	if err != nil {
