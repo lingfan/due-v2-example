@@ -12,5 +12,5 @@ type LoginPayload struct {
 
 // LoginHandler 登录事件处理器
 func LoginHandler(event *eventbus.Event) {
-	log.Infof("LoginHandler %+v", event)
+	log.Infof("event LoginHandler %+v", event)
 }

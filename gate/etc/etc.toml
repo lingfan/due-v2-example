@@ -30,6 +30,8 @@
             certFile = ""
             # 证书域名
             serverName = ""
+            # 连接池大小，默认为10
+            poolSize = 10
 [packet]
     # 字节序，little | big
     endian = "big"
@@ -61,6 +63,29 @@
     # 是否启用分级存储
     classifiedStorage = true
     # zap日志组件。以下配置项如果不存在，则会使用log域中的默认配置项；如果均未配置，则会使用系统默认配置
+    [log.zap]
+        # 日志输出文件
+        file = "./log/gate.log"
+        # 日志输出级别，可选：debug | info | warn | error | fatal | panic
+        level = "info"
+        # 日志输出格式，可选：text | json
+        format = "text"
+        # 是否输出到终端
+        stdout = true
+        # 时间格式，标准库时间格式
+        timeFormat = "2006/01/02 15:04:05.000000"
+        # 堆栈的最低输出级别，可选：debug | info | warn | error | fatal | panic
+        stackLevel = "error"
+        # 文件最大留存时间，d:天、h:时、m:分、s:秒
+        fileMaxAge = "7d"
+        # 文件最大尺寸限制，单位（MB）
+        fileMaxSize = 100
+        # 文件切割方式
+        fileCutRule = "day"
+        # 是否启用调用文件全路径
+        callerFullPath = true
+        # 是否启用分级存储
+        classifiedStorage = true
 [locate]
     [locate.redis]
         # 客户端连接地址
@@ -82,8 +107,6 @@
             addr = ":3553"
             # 客户端连接路径
             path = "/"
-            # 最大消息长度（字节），默认1kb
-            maxMsgLen = 1024
             # 服务器最大连接数
             maxConnNum = 5000
             # 秘钥文件
@@ -92,12 +115,14 @@
             certFile = ""
             # 跨域检测，空数组时不允许任何连接升级成websocket，未设置此参数时允许所有的链接升级成websocket
             origins = ["*"]
-            # 是否启用心跳检测，默认不启用
-            heartbeatCheck = true
-            # 心跳检测间隔时间（秒），默认为10秒
-            heartbeatCheckInterval = 10
             # 握手超时时间（秒），默认10秒
             handshakeTimeout = 10
+            # 心跳检测间隔时间（秒），默认为10秒。设置为0则不启用心跳检测
+            heartbeatInterval = 10
+            # 心跳机制，默认为resp响应式心跳。可选：resp 响应式心跳 | tick 定时主推心跳
+            heartbeatMechanism = "resp"
+            # 下行心跳是否携带服务器时间，默认为true
+            heartbeatWithServerTime = true
 [registry]
     [registry.etcd]
         # 客户端连接地址
@@ -106,9 +131,9 @@
         dialTimeout = "5s"
         # 命名空间
         namespace = "services"
-        # 超时时间（秒）
+        # 超时时间
         timeout = "3s"
         # 心跳重试次数
         retryTimes = 3
-        # 心跳重试间隔（秒）
-        retryInterval = 10
+        # 心跳重试间隔
+        retryInterval = "10s"

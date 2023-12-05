@@ -29,3 +29,12 @@
     # 是否启用分级存储
     classifiedStorage = true
     # zap日志组件。以下配置项如果不存在，则会使用log域中的默认配置项；如果均未配置，则会使用系统默认配置
+[network]
+    [network.ws]
+        [network.ws.client]
+            # 拨号地址
+            url = "ws://127.0.0.1:3553"
+            # 握手超时时间（秒）
+            handshakeTimeout = 10
+            # 心跳间隔时间（秒），默认为10秒。设置为0则不启用心跳检测
+            heartbeatInterval = 10
