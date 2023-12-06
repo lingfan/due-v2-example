@@ -7,6 +7,7 @@ import (
 	pb "due-v2-example/shared/pb/login"
 	"due-v2-example/shared/route"
 	"due-v2-example/shared/service"
+	"github.com/dobyte/due/v2/cluster"
 
 	"github.com/dobyte/due/v2/cluster/node"
 	"github.com/dobyte/due/v2/errors"
@@ -117,11 +118,18 @@ func (l *Login) login(ctx *node.Context) {
 
 	log.Infof("uid %v\ntoken %v\nnid %v\n", uid, token, ctx.Request.NID)
 
-	//if err = l.proxy.BindNode(ctx.Context(), uid, "hall01"); err != nil {
-	//	log.Errorf("bind node failed: uid: %d err: %v", ctx.Request.UID, err)
-	//	res.Code = common.Code_Failed
-	//	return
-	//}
+	if err = l.proxy.BindNode(ctx.Context(), uid, "hall", "hall01"); err != nil {
+		log.Errorf("bind node failed: uid: %d err: %v", ctx.Request.UID, err)
+		res.Code = common.Code_Failed
+		return
+	}
+
+	nodes, err := l.proxy.FetchNodeList(ctx.Context(), cluster.Work)
+	for _, _node := range nodes {
+		log.Infof("FetchNodeList node:%#v", _node)
+	}
+
+	log.Infof("uid %v node name:%s, node id:%s", uid, l.proxy.GetNodeName(), l.proxy.GetNodeID())
 
 	res.Code = common.Code_OK
 	res.Token = token

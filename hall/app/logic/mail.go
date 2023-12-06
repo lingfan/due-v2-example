@@ -37,7 +37,7 @@ func (l *Mail) Init() {
 		// 读取邮件
 		group.AddRouteHandler(route.ReadMail, true, l.readMail)
 		// 一键读取所有邮件
-		group.AddRouteHandler(route.ReadAllMail, false, l.readAllMail)
+		group.AddRouteHandler(route.ReadAllMail, true, l.readAllMail)
 		// 删除邮件
 		group.AddRouteHandler(route.DeleteMail, false, l.deleteMail)
 		// 删除所有邮件
@@ -86,6 +86,9 @@ func (l *Mail) readMail(ctx *node.Context) {
 
 // 一键读取所有邮件
 func (l *Mail) readAllMail(ctx *node.Context) {
+
+	log.Infof("uid %s  readAllMail %s, %s, %s, %s", ctx.Request.UID, ctx.Request.CID, ctx.Request.NID, l.proxy.GetNodeID(), l.proxy.GetNodeName())
+
 	res := &pb.ReadAllMailRes{}
 	defer func() {
 		if err := ctx.Response(res); err != nil {

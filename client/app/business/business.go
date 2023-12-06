@@ -50,7 +50,7 @@ func initEvent(proxy *client.Proxy) {
 
 	proxy.AddEventListener(cluster.Connect, func(proxy *client.Proxy) {
 
-		for i := 0; i < 3; i++ {
+		for i := 0; i < 1; i++ {
 
 			msg := &cluster.Message{
 				Route: route.Login,
