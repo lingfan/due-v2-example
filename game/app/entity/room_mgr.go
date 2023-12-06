@@ -2,6 +2,7 @@ package entity
 
 import (
 	"due-v2-example/shared/code"
+
 	"github.com/dobyte/due/v2/errors"
 )
 

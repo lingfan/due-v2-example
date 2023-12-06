@@ -2,6 +2,7 @@ package main
 
 import (
 	"due-v2-example/game/app/business"
+
 	"github.com/dobyte/due/locate/redis/v2"
 	"github.com/dobyte/due/registry/etcd/v2"
 	"github.com/dobyte/due/transport/grpc/v2"

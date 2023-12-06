@@ -4,6 +4,7 @@ import (
 	"context"
 	"due-v2-example/hall/app/logic"
 	"due-v2-example/shared/event"
+
 	"github.com/dobyte/due/eventbus/nats/v2"
 	"github.com/dobyte/due/v2/cluster/node"
 	"github.com/dobyte/due/v2/eventbus"

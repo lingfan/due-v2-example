@@ -8,6 +8,7 @@ import (
 	"due-v2-example/shared/pb/common"
 	pb "due-v2-example/shared/pb/mahjong"
 	"due-v2-example/shared/route"
+
 	"github.com/dobyte/due/v2/cluster"
 	"github.com/dobyte/due/v2/cluster/node"
 	"github.com/dobyte/due/v2/config"

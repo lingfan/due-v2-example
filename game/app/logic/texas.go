@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"due-v2-example/game/app/entity"
+
 	"github.com/dobyte/due/v2/cluster/node"
 	"github.com/dobyte/due/v2/config"
 	"github.com/dobyte/due/v2/log"
@@ -30,6 +31,6 @@ func NewTexas(proxy *node.Proxy) *Texas {
 	}
 }
 
-func (l *Texas) Init() {
-
+func (t *Texas) Init() {
+	log.Infof("texas init")
 }

@@ -3,9 +3,10 @@ package entity
 import (
 	"context"
 	"due-v2-example/shared/code"
-	"github.com/dobyte/due/v2/errors"
 	"sync"
 	"sync/atomic"
+
+	"github.com/dobyte/due/v2/errors"
 )
 
 const (

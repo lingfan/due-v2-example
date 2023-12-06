@@ -4,6 +4,7 @@ import (
 	"context"
 	"due-v2-example/game/app/logic"
 	"due-v2-example/shared/event"
+
 	"github.com/dobyte/due/eventbus/redis/v2"
 	"github.com/dobyte/due/v2/cluster/node"
 	"github.com/dobyte/due/v2/config"
@@ -29,7 +30,6 @@ func initRoute(proxy *node.Proxy) {
 	// 麻将逻辑
 	logic.NewMahjong(proxy).Init()
 	logic.NewTexas(proxy).Init()
-
 }
 
 // 初始化事件

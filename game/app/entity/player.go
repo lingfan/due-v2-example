@@ -3,8 +3,9 @@ package entity
 import (
 	"due-v2-example/shared/code"
 	"due-v2-example/shared/model/user"
-	"github.com/dobyte/due/v2/errors"
 	"sync"
+
+	"github.com/dobyte/due/v2/errors"
 )
 
 type Player struct {

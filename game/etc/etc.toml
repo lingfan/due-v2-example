@@ -6,6 +6,16 @@
         path = "./config"
         # 读写模式。可选：read-only | write-only | read-write，默认为read-only
         mode = "read-write"
+    # etcd配置中心
+    [config.etcd]
+        # 客户端连接地址
+        addrs = ["127.0.0.1:2379"]
+		# 客户端拨号超时时间，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为5s
+        dialTimeout = 5
+        # 路径。默认为/config
+        path = "/config"
+        # 读写模式。可选：read-only | write-only | read-write，默认为read-only
+        mode = "read-write"           
 [cluster]
     # 集群节点配置
     [cluster.node]
