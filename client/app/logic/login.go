@@ -5,6 +5,7 @@ import (
 	commonpb "due-v2-example/shared/pb/common"
 	loginpb "due-v2-example/shared/pb/login"
 	"due-v2-example/shared/route"
+
 	"github.com/dobyte/due/v2/cluster"
 	"github.com/dobyte/due/v2/cluster/client"
 	"github.com/dobyte/due/v2/log"
@@ -53,7 +54,7 @@ func (l *Login) login(ctx *client.Context) {
 		Route: route.QuickStart,
 		Data:  []byte{},
 	}
-	err = l.proxy.Push(msg)
+	err = ctx.Conn().Push(msg)
 	if err != nil {
 		log.Errorf("push route.QuickStart message failed: %v", err)
 	}

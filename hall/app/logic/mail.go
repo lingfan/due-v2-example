@@ -47,12 +47,12 @@ func (l *Mail) Init() {
 }
 
 // 拉取邮件列表
-func (l *Mail) fetchList(ctx *node.Context) {
-
+func (l *Mail) fetchList(ctx node.Context) {
+	log.Infof("read fetchList: %v", ctx.UID())
 }
 
 // 读取邮件
-func (l *Mail) readMail(ctx *node.Context) {
+func (l *Mail) readMail(ctx node.Context) {
 	req := &pb.ReadMailReq{}
 	res := &pb.ReadMailRes{}
 	defer func() {
@@ -61,13 +61,13 @@ func (l *Mail) readMail(ctx *node.Context) {
 		}
 	}()
 
-	if err := ctx.Request.Parse(req); err != nil {
+	if err := ctx.Parse(req); err != nil {
 		log.Errorf("invalid read mail message, err: %v", err)
 		res.Code = common.Code_Abnormal
 		return
 	}
 
-	err := l.mailSvc.ReadMail(req.MailID, ctx.Request.UID)
+	err := l.mailSvc.ReadMail(req.MailID, ctx.UID())
 	if err != nil {
 		switch errors.Code(err) {
 		case code.NoPermission:
@@ -85,9 +85,9 @@ func (l *Mail) readMail(ctx *node.Context) {
 }
 
 // 一键读取所有邮件
-func (l *Mail) readAllMail(ctx *node.Context) {
+func (l *Mail) readAllMail(ctx node.Context) {
 
-	log.Infof("uid %s  readAllMail %s, %s, %s, %s", ctx.Request.UID, ctx.Request.CID, ctx.Request.NID, l.proxy.GetNodeID(), l.proxy.GetNodeName())
+	log.Infof("uid %s  readAllMail %s, %s, %s, %s", ctx.UID(), ctx.CID, ctx.NID, l.proxy.GetID(), l.proxy.GetName())
 
 	res := &pb.ReadAllMailRes{}
 	defer func() {
@@ -96,7 +96,7 @@ func (l *Mail) readAllMail(ctx *node.Context) {
 		}
 	}()
 
-	err := l.mailSvc.ReadAllMail(ctx.Request.UID)
+	err := l.mailSvc.ReadAllMail(ctx.UID())
 	if err != nil {
 		switch errors.Code(err) {
 		case code.NoPermission:
@@ -114,7 +114,7 @@ func (l *Mail) readAllMail(ctx *node.Context) {
 }
 
 // 删除邮件
-func (l *Mail) deleteMail(ctx *node.Context) {
+func (l *Mail) deleteMail(ctx node.Context) {
 	req := &pb.DeleteMailReq{}
 	res := &pb.DeleteMailRes{}
 	defer func() {
@@ -123,13 +123,13 @@ func (l *Mail) deleteMail(ctx *node.Context) {
 		}
 	}()
 
-	if err := ctx.Request.Parse(req); err != nil {
+	if err := ctx.Parse(req); err != nil {
 		log.Errorf("invalid delete mail message, err: %v", err)
 		res.Code = common.Code_Abnormal
 		return
 	}
 
-	err := l.mailSvc.DeleteMail(req.MailID, ctx.Request.UID, false)
+	err := l.mailSvc.DeleteMail(req.MailID, ctx.UID(), false)
 	if err != nil {
 		switch errors.Code(err) {
 		case code.NotFoundMail:
@@ -147,7 +147,7 @@ func (l *Mail) deleteMail(ctx *node.Context) {
 }
 
 // 一键删除所有邮件
-func (l *Mail) deleteAllMail(ctx *node.Context) {
+func (l *Mail) deleteAllMail(ctx node.Context) {
 	res := &pb.ReadAllMailRes{}
 	defer func() {
 		if err := ctx.Response(res); err != nil {
@@ -155,7 +155,7 @@ func (l *Mail) deleteAllMail(ctx *node.Context) {
 		}
 	}()
 
-	err := l.mailSvc.DeleteAllMail(ctx.Request.UID, false)
+	err := l.mailSvc.DeleteAllMail(ctx.UID(), false)
 	if err != nil {
 		res.Code = common.Code_Failed
 		log.Errorf("read all mail failed, err: %v", err)

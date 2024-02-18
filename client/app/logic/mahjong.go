@@ -6,6 +6,7 @@ import (
 	mailpb "due-v2-example/shared/pb/mail"
 	"due-v2-example/shared/route"
 	"github.com/dobyte/due/v2/cluster"
+
 	"github.com/dobyte/due/v2/cluster/client"
 	"github.com/dobyte/due/v2/log"
 )
@@ -45,10 +46,11 @@ func (l *Mahjong) quickStartAck(ctx *client.Context) {
 	log.Infof("quick start success %+v", res)
 
 	msg := &cluster.Message{
-		Route: route.Ready,
+		Route: route.QuickStart,
 		Data:  []byte{},
 	}
-	err = l.proxy.Push(msg)
+	err = ctx.Conn().Push(msg)
+
 	if err != nil {
 		log.Errorf("push message route.Ready failed: %v", err)
 	}
@@ -64,12 +66,11 @@ func (l *Mahjong) gameInfoNotify(ctx *client.Context) {
 	}
 
 	log.Infof("receive game info %+", ntf)
-
 	msg := &cluster.Message{
 		Route: route.ReadAllMail,
 		Data:  &mailpb.ReadAllMailReq{},
 	}
-	err = l.proxy.Push(msg)
+	err = ctx.Conn().Push(msg)
 	if err != nil {
 		log.Errorf("push message route.FetchMailList failed: %v", err)
 	}

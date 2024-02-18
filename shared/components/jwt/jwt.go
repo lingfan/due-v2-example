@@ -30,7 +30,7 @@ func Instance() *JWT {
 			log.Fatalf("load jwt config failed: %v", err)
 		}
 
-		instance = jwt.NewJWT(
+		instance, _ = jwt.NewJWT(
 			jwt.WithIssuer(conf.Issuer),
 			jwt.WithIdentityKey(conf.IdentityKey),
 			jwt.WithSecretKey(conf.SecretKey),

@@ -4,7 +4,6 @@ import (
 	"context"
 	"due-v2-example/game/app/entity"
 	"due-v2-example/shared/code"
-	"due-v2-example/shared/middleware"
 	"due-v2-example/shared/pb/common"
 	pb "due-v2-example/shared/pb/mahjong"
 	"due-v2-example/shared/route"
@@ -44,7 +43,7 @@ func (l *Mahjong) Init() {
 	// 注册路由
 	l.proxy.Router().Group(func(group *node.RouterGroup) {
 		// 注册中间件
-		group.Middleware(middleware.Auth)
+		//group.Middleware(middleware.Auth)
 		// 快速开始
 		group.AddRouteHandler(route.QuickStart, false, l.quickStart)
 		// 坐下
@@ -58,14 +57,14 @@ func (l *Mahjong) Init() {
 	})
 
 	// 断开连接
-	l.proxy.Events().AddEventHandler(cluster.Disconnect, l.disconnect)
+	l.proxy.AddEventHandler(cluster.Disconnect, l.disconnect)
 	// 重新连接
-	l.proxy.Events().AddEventHandler(cluster.Reconnect, l.reconnect)
+	l.proxy.AddEventHandler(cluster.Reconnect, l.reconnect)
 }
 
 // 断开连接
-func (l *Mahjong) disconnect(event *node.Event) {
-	player, err := l.playerMgr.GetPlayer(event.UID)
+func (l *Mahjong) disconnect(ctx node.Context) {
+	player, err := l.playerMgr.GetPlayer(ctx.UID())
 	if err != nil {
 		return
 	}
@@ -81,8 +80,8 @@ func (l *Mahjong) disconnect(event *node.Event) {
 }
 
 // 重新连接
-func (l *Mahjong) reconnect(event *node.Event) {
-	player, err := l.playerMgr.GetPlayer(event.UID)
+func (l *Mahjong) reconnect(ctx node.Context) {
+	player, err := l.playerMgr.GetPlayer(ctx.UID())
 	if err != nil {
 		return
 	}
@@ -100,7 +99,8 @@ func (l *Mahjong) reconnect(event *node.Event) {
 }
 
 // 快速开始
-func (l *Mahjong) quickStart(ctx *node.Context) {
+func (l *Mahjong) quickStart(ctx node.Context) {
+
 	res := &pb.QuickStartRes{}
 	defer func() {
 		if err := ctx.Response(res); err != nil {
@@ -108,14 +108,14 @@ func (l *Mahjong) quickStart(ctx *node.Context) {
 		}
 	}()
 
-	player, err := l.playerMgr.LoadPlayer(ctx.Request.UID)
+	player, err := l.playerMgr.LoadPlayer(ctx.UID())
 	if err != nil {
-		log.Errorf("load user info failed: uid: %d err: %v", ctx.Request.UID, err)
+		log.Errorf("load user info failed: uid: %d err: %v", ctx.UID(), err)
 		res.Code = common.Code_Failed
 		return
 	}
 
-	log.Infof("playerMgr.LoadPlayer %v %+v", ctx.Request.UID, player)
+	log.Infof("playerMgr.LoadPlayer %v %+v", ctx.UID(), player)
 
 	seat := player.Seat()
 	log.Infof("player.Seat %+v", seat)
@@ -126,18 +126,18 @@ func (l *Mahjong) quickStart(ctx *node.Context) {
 
 	defer func() {
 		if err != nil {
-			l.playerMgr.UnloadPlayer(ctx.Request.UID)
+			l.playerMgr.UnloadPlayer(ctx.UID())
 		}
 	}()
 
 	if err = l.roomMgr.QuickMatch(player); err != nil {
-		log.Errorf("quick match failed: uid: %d err: %v", ctx.Request.UID, err)
+		log.Errorf("quick match failed: uid: %d err: %v", ctx.UID(), err)
 		res.Code = common.Code_Failed
 		return
 	}
 
 	if err = ctx.BindNode(); err != nil {
-		log.Errorf("bind node failed: uid: %d err: %v", ctx.Request.UID, err)
+		log.Errorf("bind node failed: uid: %d err: %v", ctx.UID(), err)
 		res.Code = common.Code_Failed
 		return
 	}
@@ -149,7 +149,7 @@ func (l *Mahjong) quickStart(ctx *node.Context) {
 }
 
 // 坐下
-func (l *Mahjong) sitDown(ctx *node.Context) {
+func (l *Mahjong) sitDown(ctx node.Context) {
 	req := &pb.SitDownReq{}
 	res := &pb.SitDownRes{}
 	defer func() {
@@ -158,7 +158,7 @@ func (l *Mahjong) sitDown(ctx *node.Context) {
 		}
 	}()
 
-	player, err := l.playerMgr.LoadPlayer(ctx.Request.UID)
+	player, err := l.playerMgr.LoadPlayer(ctx.UID())
 	if err != nil {
 		res.Code = common.Code_IllegalOperation
 		return
@@ -170,7 +170,7 @@ func (l *Mahjong) sitDown(ctx *node.Context) {
 		return
 	}
 
-	if err = ctx.Request.Parse(req); err != nil {
+	if err = ctx.Parse(req); err != nil {
 		log.Errorf("invalid sit down message, err: %v", err)
 		res.Code = common.Code_Abnormal
 		return
@@ -184,7 +184,7 @@ func (l *Mahjong) sitDown(ctx *node.Context) {
 
 	defer func() {
 		if err != nil {
-			l.playerMgr.UnloadPlayer(ctx.Request.UID)
+			l.playerMgr.UnloadPlayer(ctx.UID())
 		}
 	}()
 
@@ -198,12 +198,12 @@ func (l *Mahjong) sitDown(ctx *node.Context) {
 		default:
 			res.Code = common.Code_Failed
 		}
-		log.Errorf("sit down failed: uid: %d roomID: %d tableID: %d seatID: %d err: %v", ctx.Request.UID, req.RoomID, req.TableID, req.SeatID, err)
+		log.Errorf("sit down failed: uid: %d roomID: %d tableID: %d seatID: %d err: %v", ctx.UID(), req.RoomID, req.TableID, req.SeatID, err)
 		return
 	}
 
 	if err = ctx.BindNode(); err != nil {
-		log.Errorf("bind node failed: uid: %d err: %v", ctx.Request.UID, err)
+		log.Errorf("bind node failed: uid: %d err: %v", ctx.UID(), err)
 		res.Code = common.Code_Failed
 		return
 	}
@@ -215,7 +215,7 @@ func (l *Mahjong) sitDown(ctx *node.Context) {
 }
 
 // 站起
-func (l *Mahjong) standUp(ctx *node.Context) {
+func (l *Mahjong) standUp(ctx node.Context) {
 	res := &pb.StandUpRes{}
 	defer func() {
 		if err := ctx.Response(res); err != nil {
@@ -223,12 +223,12 @@ func (l *Mahjong) standUp(ctx *node.Context) {
 		}
 	}()
 
-	if ctx.Request.UID <= 0 {
+	if ctx.UID() <= 0 {
 		res.Code = common.Code_NotLogin
 		return
 	}
 
-	player, err := l.playerMgr.GetPlayer(ctx.Request.UID)
+	player, err := l.playerMgr.GetPlayer(ctx.UID())
 	if err != nil {
 		res.Code = common.Code_IllegalOperation
 		return
@@ -248,7 +248,7 @@ func (l *Mahjong) standUp(ctx *node.Context) {
 
 	err = ctx.UnbindNode()
 	if err != nil {
-		log.Errorf("unbind node failed: uid: %d err: %v", ctx.Request.UID, err)
+		log.Errorf("unbind node failed: uid: %d err: %v", ctx.UID(), err)
 	}
 
 	l.syncSeatStateChange(seat, pb.SeatState_StandUp)
@@ -257,7 +257,7 @@ func (l *Mahjong) standUp(ctx *node.Context) {
 }
 
 // 开始准备
-func (l *Mahjong) ready(ctx *node.Context) {
+func (l *Mahjong) ready(ctx node.Context) {
 	res := &pb.ReadyRes{}
 	defer func() {
 		if err := ctx.Response(res); err != nil {
@@ -265,7 +265,7 @@ func (l *Mahjong) ready(ctx *node.Context) {
 		}
 	}()
 
-	player, err := l.playerMgr.GetPlayer(ctx.Request.UID)
+	player, err := l.playerMgr.GetPlayer(ctx.UID())
 	if err != nil {
 		res.Code = common.Code_IllegalOperation
 		return
@@ -290,7 +290,7 @@ func (l *Mahjong) ready(ctx *node.Context) {
 }
 
 // 取消准备
-func (l *Mahjong) unready(ctx *node.Context) {
+func (l *Mahjong) unready(ctx node.Context) {
 	res := &pb.UnreadyRes{}
 	defer func() {
 		if err := ctx.Response(res); err != nil {
@@ -298,7 +298,7 @@ func (l *Mahjong) unready(ctx *node.Context) {
 		}
 	}()
 
-	player, err := l.playerMgr.GetPlayer(ctx.Request.UID)
+	player, err := l.playerMgr.GetPlayer(ctx.UID())
 	if err != nil {
 		res.Code = common.Code_IllegalOperation
 		return

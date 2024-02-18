@@ -5,8 +5,9 @@ import (
 	"due-v2-example/client/app/logic"
 	"due-v2-example/client/app/store"
 	"due-v2-example/shared/event"
-	pb "due-v2-example/shared/pb/login"
+	loginpb "due-v2-example/shared/pb/login"
 	"due-v2-example/shared/route"
+
 	"github.com/dobyte/due/eventbus/redis/v2"
 	"github.com/dobyte/due/v2/cluster"
 	"github.com/dobyte/due/v2/cluster/client"
@@ -48,20 +49,20 @@ func initEvent(proxy *client.Proxy) {
 		log.Fatalf("%s event subscribe failed: %v", event.Login, err)
 	}
 
-	proxy.AddEventListener(cluster.Connect, func(proxy *client.Proxy) {
+	proxy.AddEventListener(cluster.Connect, func(conn *client.Conn) {
 
 		for i := 0; i < 1; i++ {
 
 			msg := &cluster.Message{
 				Route: route.Login,
-				Data: &pb.LoginReq{
-					Mode:     pb.LoginMode_Guest,
+				Data: &loginpb.LoginReq{
+					Mode:     loginpb.LoginMode_Guest,
 					DeviceID: store.DeviceID + string(rune(i)),
 				},
 			}
 			log.Infof("push route.Login message: %+v", msg)
 
-			err := proxy.Push(msg)
+			err := conn.Push(msg)
 			if err != nil {
 				log.Errorf("push message route.Login failed: %v", err)
 			}
@@ -70,39 +71,39 @@ func initEvent(proxy *client.Proxy) {
 
 	})
 
-	proxy.AddEventListener(cluster.Reconnect, func(proxy *client.Proxy) {
+	proxy.AddEventListener(cluster.Reconnect, func(conn *client.Conn) {
 		if store.Token == "" {
 
 			msg := &cluster.Message{
 				Route: route.Login,
-				Data: &pb.LoginReq{
-					Mode:     pb.LoginMode_Guest,
+				Data: &loginpb.LoginReq{
+					Mode:     loginpb.LoginMode_Guest,
 					DeviceID: store.DeviceID,
 				},
 			}
 
-			err := proxy.Push(msg)
+			err := conn.Push(msg)
 			if err != nil {
 				log.Errorf("push message failed: %v", err)
 			}
 		} else {
 			msg := &cluster.Message{
 				Route: route.Login,
-				Data: &pb.LoginReq{
-					Mode:     pb.LoginMode_Token,
+				Data: &loginpb.LoginReq{
+					Mode:     loginpb.LoginMode_Token,
 					DeviceID: store.DeviceID,
 					Token:    store.Token,
 				},
 			}
 
-			err := proxy.Push(msg)
+			err := conn.Push(msg)
 			if err != nil {
 				log.Errorf("push message failed: %v", err)
 			}
 		}
 	})
 
-	//proxy.AddEventListener(cluster.Disconnect, func(proxy client.Proxy) {
+	//proxy.AddEventListener(cluster.Disconnect, func(proxy client.Conn) {
 	//	for {
 	//		err := proxy.Reconnect()
 	//		if err == nil {

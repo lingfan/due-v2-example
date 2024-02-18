@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "due-mahjong-server/shared/pb/mail";
+option go_package = "due-v2-example/shared/pb/mail";
 
 package mail;
 

@@ -17,6 +17,7 @@ func main() {
 	component := client.NewClient(
 		client.WithClient(ws.NewClient()),
 	)
+
 	// 初始化路由
 	business.Init(component.Proxy())
 	// 添加网关组件
