@@ -7,7 +7,6 @@ import (
 	"due-v2-example/shared/event"
 	loginpb "due-v2-example/shared/pb/login"
 	"due-v2-example/shared/route"
-
 	"github.com/dobyte/due/eventbus/redis/v2"
 	"github.com/dobyte/due/v2/cluster"
 	"github.com/dobyte/due/v2/cluster/client"
@@ -25,6 +24,8 @@ func Init(proxy *client.Proxy) {
 
 // 初始化路由
 func initRoute(proxy *client.Proxy) {
+	log.Infof("initRoute")
+
 	// 登录逻辑
 	logic.NewLogin(proxy).Init()
 	// 邮件逻辑
@@ -35,6 +36,7 @@ func initRoute(proxy *client.Proxy) {
 
 // 初始化事件
 func initEvent(proxy *client.Proxy) {
+	log.Infof("initEvent")
 
 	// 初始化事件总线
 	eventbus.SetEventbus(redis.NewEventbus())
@@ -49,70 +51,84 @@ func initEvent(proxy *client.Proxy) {
 		log.Fatalf("%s event subscribe failed: %v", event.Login, err)
 	}
 
-	proxy.AddEventListener(cluster.Connect, func(conn *client.Conn) {
+	// 监听组件启动
+	proxy.AddHookListener(cluster.Start, startHandler)
 
-		for i := 0; i < 1; i++ {
+	proxy.AddEventListener(cluster.Connect, connectHandler)
 
-			msg := &cluster.Message{
-				Route: route.Login,
-				Data: &loginpb.LoginReq{
-					Mode:     loginpb.LoginMode_Guest,
-					DeviceID: store.DeviceID + string(rune(i)),
-				},
-			}
-			log.Infof("push route.Login message: %+v", msg)
+	proxy.AddEventListener(cluster.Reconnect, reconnectHandler)
 
-			err := conn.Push(msg)
-			if err != nil {
-				log.Errorf("push message route.Login failed: %v", err)
-			}
+	proxy.AddEventListener(cluster.Disconnect, disconnectHandler)
+}
 
+func disconnectHandler(conn *client.Conn) {
+	log.Errorf("client disconnect: %v", conn.UID())
+
+	//for {
+	//reconnectHandler(conn)
+	//time.Sleep(time.Second)
+	//log.Errorf("reconnect failed: %v", err)
+	//}
+}
+
+func reconnectHandler(conn *client.Conn) {
+	if store.Token == "" {
+
+		msg := &cluster.Message{
+			Route: route.Login,
+			Data: &loginpb.LoginReq{
+				Mode:     loginpb.LoginMode_Guest,
+				DeviceID: store.DeviceID,
+			},
 		}
 
-	})
-
-	proxy.AddEventListener(cluster.Reconnect, func(conn *client.Conn) {
-		if store.Token == "" {
-
-			msg := &cluster.Message{
-				Route: route.Login,
-				Data: &loginpb.LoginReq{
-					Mode:     loginpb.LoginMode_Guest,
-					DeviceID: store.DeviceID,
-				},
-			}
-
-			err := conn.Push(msg)
-			if err != nil {
-				log.Errorf("push message failed: %v", err)
-			}
-		} else {
-			msg := &cluster.Message{
-				Route: route.Login,
-				Data: &loginpb.LoginReq{
-					Mode:     loginpb.LoginMode_Token,
-					DeviceID: store.DeviceID,
-					Token:    store.Token,
-				},
-			}
-
-			err := conn.Push(msg)
-			if err != nil {
-				log.Errorf("push message failed: %v", err)
-			}
+		err := conn.Push(msg)
+		if err != nil {
+			log.Errorf("push message failed: %v", err)
 		}
-	})
+	} else {
+		msg := &cluster.Message{
+			Route: route.Login,
+			Data: &loginpb.LoginReq{
+				Mode:     loginpb.LoginMode_Token,
+				DeviceID: store.DeviceID,
+				Token:    store.Token,
+			},
+		}
 
-	//proxy.AddEventListener(cluster.Disconnect, func(proxy client.Conn) {
-	//	for {
-	//		err := proxy.Reconnect()
-	//		if err == nil {
-	//			return
-	//		}
-	//
-	//		time.Sleep(time.Second)
-	//
-	//		log.Errorf("reconnect failed: %v", err)
-	//	}
-	//})
+		err := conn.Push(msg)
+		if err != nil {
+			log.Errorf("push message failed: %v", err)
+		}
+	}
+}
+
+// 组件启动处理器
+func startHandler(proxy *client.Proxy) {
+	if _, err := proxy.Dial(); err != nil {
+		log.Errorf("client connect gate failed: %v", err)
+		return
+	}
+}
+
+// 连接建立处理器
+func connectHandler(conn *client.Conn) {
+	for i := 0; i < 1; i++ {
+
+		msg := &cluster.Message{
+			Route: route.Login,
+			Data: &loginpb.LoginReq{
+				Mode:     loginpb.LoginMode_Guest,
+				DeviceID: store.DeviceID + string(rune(i)),
+			},
+		}
+
+		log.Infof("push route.Login message: %+v", msg)
+
+		err := conn.Push(msg)
+		if err != nil {
+			log.Errorf("push message route.Login failed: %v", err)
+		}
+
+	}
 }

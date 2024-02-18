@@ -6,6 +6,7 @@
         path = "./config"
         # 读写模式。可选：read-only | write-only | read-write，默认为read-only
         mode = "read-write"
+
 [cluster]
     # 集群网关配置
     [cluster.gate]
@@ -13,6 +14,9 @@
         id = "gate01"
         # 实例名称
         name = "gate"
+        # RPC调用超时时间
+        timeout = "1s"
+
 [transport]
     # GRPC相关配置
     [transport.grpc]
@@ -32,13 +36,34 @@
             serverName = ""
             # 连接池大小，默认为10
             poolSize = 10
+    [transport.rpcx]
+        # RPCX服务器相关配置
+        [transport.rpcx.server]
+            # 服务器监听地址，空或:0时系统将会随机端口号
+            addr = ":0"
+            # 秘钥文件
+            keyFile = ""
+            # 证书文件
+            certFile = ""
+        # RPCX服务器相关配置
+        [transport.rpcx.client]
+            # 证书文件
+            certFile = ""
+            # 证书域名
+            serverName = ""
+            # 连接池大小，默认为10
+            poolSize = 10
+
 [packet]
-    # 字节序，little | big
-    endian = "big"
-    # 序列号字节长度（字节）
-    seqBytesLen = 2
-    # 路由字节长度（字节）
-    routeBytesLen = 2
+    # 字节序，默认为big。可选：little | big
+    byteOrder = "big"
+    # 路由字节数，默认为2字节
+    routeBytes = 4
+    # 序列号字节数，默认为2字节
+    seqBytes = 0
+    # 消息字节数，默认为5000字节
+    bufferBytes = 100000
+
 [log]
     # 日志输出文件
     file = "./log/gate.log"
@@ -86,6 +111,7 @@
         callerFullPath = true
         # 是否启用分级存储
         classifiedStorage = true
+
 [locate]
     [locate.redis]
         # 客户端连接地址
@@ -100,6 +126,7 @@
         maxRetries = 3
         # key前缀
         prefix = "gate"
+
 [network]
     [network.ws]
         [network.ws.server]
@@ -115,14 +142,15 @@
             certFile = ""
             # 跨域检测，空数组时不允许任何连接升级成websocket，未设置此参数时允许所有的链接升级成websocket
             origins = ["*"]
-            # 握手超时时间（秒），默认10秒
-            handshakeTimeout = 10
-            # 心跳检测间隔时间（秒），默认为10秒。设置为0则不启用心跳检测
-            heartbeatInterval = 10
+            # 握手超时时间，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
+            handshakeTimeout = "10s"
+            # 心跳检测间隔时间。设置为0则不启用心跳检测，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
+            heartbeatInterval = "10s"
             # 心跳机制，默认为resp响应式心跳。可选：resp 响应式心跳 | tick 定时主推心跳
             heartbeatMechanism = "resp"
             # 下行心跳是否携带服务器时间，默认为true
             heartbeatWithServerTime = true
+
 [registry]
     [registry.etcd]
         # 客户端连接地址
@@ -137,3 +165,18 @@
         retryTimes = 3
         # 心跳重试间隔
         retryInterval = "10s"
+    [registry.consul]
+        # 客户端连接地址，默认为127.0.0.1:8500
+        addr = "127.0.0.1:8500"
+        # 是否启用健康检查，默认为true
+        healthCheck = true
+        # 健康检查时间间隔（秒），仅在启用健康检查后生效，默认为10
+        healthCheckInterval = 10
+        # 健康检查超时时间（秒），仅在启用健康检查后生效，默认为5
+        healthCheckTimeout = 5
+        # 是否启用心跳检查，默认为true
+        heartbeatCheck = true
+        # 心跳检查时间间隔（秒），仅在启用心跳检查后生效，默认为10
+        heartbeatCheckInterval = 10
+        # 健康检测失败后自动注销服务时间（秒），默认为30
+        deregisterCriticalServiceAfter = 30

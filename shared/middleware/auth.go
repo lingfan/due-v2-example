@@ -8,6 +8,7 @@ import (
 )
 
 func Auth(middleware *node.Middleware, ctx node.Context) {
+	log.Errorf("middleware Auth: %v", ctx.UID)
 
 	if ctx.UID() == 0 {
 		err := ctx.Reply(&cluster.Message{Route: route.Unauthorized})
