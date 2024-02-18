@@ -1,0 +1,16 @@
+go 1.22.0
+
+use (
+	.
+	../due-2-feature-main
+	../due-2-feature-main/config/etcd
+	../due-2-feature-main/eventbus/nats
+	../due-2-feature-main/eventbus/redis
+	../due-2-feature-main/locate/redis
+	../due-2-feature-main/log/zap
+	../due-2-feature-main/network/ws
+	../due-2-feature-main/registry/consul
+	../due-2-feature-main/registry/etcd
+	../due-2-feature-main/transport/rpcx
+
+)
