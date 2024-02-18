@@ -56,7 +56,7 @@
 
 [packet]
     # 字节序，默认为big。可选：little | big
-    byteOrder = "big"
+    byteOrder = "little"
     # 路由字节数，默认为2字节
     routeBytes = 4
     # 序列号字节数，默认为2字节
@@ -145,7 +145,7 @@
             # 握手超时时间，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
             handshakeTimeout = "10s"
             # 心跳检测间隔时间。设置为0则不启用心跳检测，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
-            heartbeatInterval = "10s"
+            heartbeatInterval = "0"
             # 心跳机制，默认为resp响应式心跳。可选：resp 响应式心跳 | tick 定时主推心跳
             heartbeatMechanism = "resp"
             # 下行心跳是否携带服务器时间，默认为true

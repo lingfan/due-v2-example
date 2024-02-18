@@ -12,7 +12,6 @@ import (
 	"github.com/dobyte/due/network/ws/v2"
 	"github.com/dobyte/due/registry/etcd/v2"
 	"github.com/dobyte/due/transport/rpcx/v2"
-
 	"github.com/dobyte/due/v2"
 	"github.com/dobyte/due/v2/cluster/gate"
 	"github.com/dobyte/due/v2/mode"
@@ -20,6 +19,10 @@ import (
 
 func main() {
 	mode.SetMode(mode.DebugMode)
+
+	//这个自定义数据包 为uxgame 项目的解析数据包
+	//uxPacker := net.NewPacker()
+	//packet.SetPacker(uxPacker)
 
 	// 创建容器
 	container := due.NewContainer()
