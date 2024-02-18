@@ -6,7 +6,7 @@
         # 实例名称
         name = "client"
         # 编解码器。可选：json | proto
-        codec = "json"
+        codec = "proto"
 
 [packet]
     # 字节序，默认为big。可选：little | big
