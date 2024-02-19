@@ -4,6 +4,7 @@ import (
 	"context"
 	"due-v2-example/client/app/logic"
 	"due-v2-example/client/app/store"
+	rd "due-v2-example/shared/components/redis"
 	"due-v2-example/shared/event"
 	loginpb "due-v2-example/shared/pb/login"
 	"due-v2-example/shared/route"
@@ -122,6 +123,19 @@ func connectHandler(conn *client.Conn) {
 				DeviceID: store.DeviceID + string(rune(i)),
 			},
 		}
+
+		//goredis 有bug ERR “Unknown subcommand or wrong number of arguments for 'setinfo'”
+		//goredisRD := rd.GoRedisRD()
+		//_key1 := "test1"
+		//_ = goredisRD.Set(_key1, "test111")
+		//_data := goredisRD.Get(_key1)
+		//log.Infof("GoRedisRD.Get(%s): %+v", _key1, _data)
+
+		RueidisRD := rd.RueidisRD()
+		_key2 := "test2"
+		_ = RueidisRD.Set(_key2, "test222")
+		_data2 := RueidisRD.Get(_key2)
+		log.Infof("RueidisRD.Get(%s): %+v", _key2, _data2)
 
 		log.Infof("push route.Login message: %+v", msg)
 

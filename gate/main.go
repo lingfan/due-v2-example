@@ -42,6 +42,7 @@ func main() {
 		gate.WithTransporter(transporter),
 	) // 添加网关组件
 	container.Add(component)
+
 	// 启动容器
 	container.Serve()
 }
