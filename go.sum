@@ -61,8 +61,6 @@ github.com/dgryski/go-jump v0.0.0-20211018200510-ba001c3ffce0 h1:0wH6nO9QEa02Qx8
 github.com/dgryski/go-jump v0.0.0-20211018200510-ba001c3ffce0/go.mod h1:4hKCXuwrJoYvHZxJ86+bRVTOMyJ0Ej+RqfSm8mHi6KA=
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f h1:lO4WD4F/rVNCu3HqELle0jiPLLBs70cWOduZpkS1E78=
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f/go.mod h1:cuUVRXasLTGF7a8hSLbxyZXjz+1KgoB3wDUb6vlszIc=
-github.com/dobyte/due/config/etcd/v2 v2.0.0-20240117070452-e2b4cec86650 h1:Z475fcyWtzaVzSdLMo2QkwQ1DYlAclpa/lQ7NidmAgc=
-github.com/dobyte/due/config/etcd/v2 v2.0.0-20240117070452-e2b4cec86650/go.mod h1:pRtuYl7ocCr1MYMFGayMWTBqV9v0UXZcJMpwqS8UTy0=
 github.com/dobyte/due/eventbus/nats/v2 v2.0.0-20240117070452-e2b4cec86650 h1:iYuADJYP+ZaU4lVTitJZVq6CTFz5Nn7jpNVsvSHmBWg=
 github.com/dobyte/due/eventbus/nats/v2 v2.0.0-20240117070452-e2b4cec86650/go.mod h1:lhT6n3s+vJI/xAon5zdD4dZu5TI3neTLlMFbhnhC4k8=
 github.com/dobyte/due/eventbus/redis/v2 v2.0.0-20240117070452-e2b4cec86650 h1:GhnqQ6a6NgTwC2zVPrAkWxCIU90L4oyUE/Lk6uo/sgU=
@@ -75,8 +73,8 @@ github.com/dobyte/due/registry/etcd/v2 v2.0.0-20240117070452-e2b4cec86650 h1:HgJ
 github.com/dobyte/due/registry/etcd/v2 v2.0.0-20240117070452-e2b4cec86650/go.mod h1:SRUrUiCLaOKovH3lFTW5WN4W0YS9hOINR88PEGiBcBo=
 github.com/dobyte/due/transport/rpcx/v2 v2.0.0-20240117070452-e2b4cec86650 h1:TfbrvdWH5bfUUO3CUUS/O95MJXajpG956Uy828T5yOU=
 github.com/dobyte/due/transport/rpcx/v2 v2.0.0-20240117070452-e2b4cec86650/go.mod h1:5bAIZMJikgqmxvi30tyvNipt78Ys8i95etAp79LchQE=
-github.com/dobyte/due/v2 v2.0.0 h1:7SH2BkYIkl+/Up5kliBIYc8il5Pl45sb89Df9TiXVlM=
-github.com/dobyte/due/v2 v2.0.0/go.mod h1:eWeTk2XXmafBOr9ox6zJDk8BJFu+mxvRalQ+JculhfI=
+github.com/dobyte/due/v2 v2.0.1-0.20240207103526-c6919f1fbd83 h1:gbtXhETDiuC61wI+6osTjoI11+Lt/FfRYt1lRAWQDmU=
+github.com/dobyte/due/v2 v2.0.1-0.20240207103526-c6919f1fbd83/go.mod h1:f1nIfAodksMYvgUpqO2H/TZxwEElZGQeBdiFyYMqYiQ=
 github.com/dobyte/jwt v0.1.4 h1:G9PKe/fTN6IUtogLxSKvI+i9vxyOHekMeKpZBKRyLes=
 github.com/dobyte/jwt v0.1.4/go.mod h1:IYiTkvr07ntPfwmcKG5VL0M/WpTFpFOTMNvJVkNNAfs=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
